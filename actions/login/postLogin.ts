@@ -1,5 +1,7 @@
 "use server";
 
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 import { loginSchema, loginSchemaType } from "@/schema/auth";
 
 export async function PostLogin(form: loginSchemaType) {
@@ -8,8 +10,10 @@ export async function PostLogin(form: loginSchemaType) {
     throw new Error("Invalid form data");
   }
 
-  const result = await fetch("/api/login");
-  if (!result) {
-    throw new Error("Failed to create account");
+  const user = await prisma.user.findUnique({
+    where: { email: data.email },
+  });
+  if (!user || !bcrypt.compareSync(data.password, user.password)) {
+    throw new Error("Invalid email or password");
   }
 }

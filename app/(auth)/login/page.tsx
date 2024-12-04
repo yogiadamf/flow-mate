@@ -33,7 +33,7 @@ const FormLogin = () => {
       toast.success("Login success", { id: "sign-in" });
     },
     onError: () => {
-      toast.error("Invalid credentials username and password ", {
+      toast.error("Invalid email or password ", {
         id: "sign-in",
       });
     },
