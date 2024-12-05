@@ -1,10 +1,13 @@
 import BreadcrumbHeader from "@/components/layout/BreadcrumbHeader";
 import DesktopSidebar from "@/components/layout/Sidebar";
 import { ModeToggle } from "@/components/ThemeModeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { getSessionFromCookie } from "@/lib/auth";
 import React from "react";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await getSessionFromCookie();
   return (
     <div className="flex h-screnn">
       <DesktopSidebar />
@@ -13,6 +16,9 @@ const layout = ({ children }: { children: React.ReactNode }) => {
           <BreadcrumbHeader />
           <div className="gap-1 flex items-center">
             <ModeToggle />
+            <Avatar>
+              <AvatarFallback>{session?.user.name}</AvatarFallback>
+            </Avatar>
           </div>
         </header>
         <Separator />
