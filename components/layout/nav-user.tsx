@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  LogOut,
-  ShieldQuestionIcon,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, UserCog2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -29,9 +23,9 @@ export function NavUser({
   user,
 }: {
   user: {
-    name: string;
-    email: string;
-    image: string;
+    name?: string;
+    email?: string;
+    image?: string;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -48,7 +42,7 @@ export function NavUser({
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.image} alt={user.name} />
                 <AvatarFallback className="rounded-lg uppercase">
-                  {user.name[0]}
+                  {user.name?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -68,8 +62,8 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.image} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
-                    {user.name[0]}
+                  <AvatarFallback className="rounded-lg uppercase">
+                    {user.name?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -81,7 +75,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck />
+                <UserCog2 />
                 Account
               </DropdownMenuItem>
             </DropdownMenuGroup>

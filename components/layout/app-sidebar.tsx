@@ -33,9 +33,9 @@ const data = {
 };
 
 interface UserType {
-  name: string | "";
-  email: string | "";
-  image: string | "";
+  name?: string;
+  email?: string;
+  image?: string;
 }
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: UserType;
