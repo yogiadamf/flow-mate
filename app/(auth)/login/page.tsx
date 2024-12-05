@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { loginSchema, loginSchemaType } from "@/schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,8 +18,9 @@ import { PostLogin } from "@/actions/login/postLogin";
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
-const FormLogin = () => {
+const FormLogin = () => {    
   const form = useForm<loginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,18 +31,18 @@ const FormLogin = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: PostLogin,
     onSuccess: () => {
-      toast.success("Login success", { id: "sign-in" });
+      toast.success("Login success", { id: "login" });
     },
     onError: () => {
       toast.error("Invalid email or password ", {
-        id: "sign-in",
+        id: "login",
       });
     },
   });
 
   const onSubmit = useCallback(
     (values: loginSchemaType) => {
-      toast.loading("loading...", { id: "sign-in" });
+      toast.loading("loading...", { id: "login" });
       mutate(values);
     },
     [mutate]
@@ -51,11 +52,9 @@ const FormLogin = () => {
     <div className="flex items-center justify-center [&>div]:w-full">
       <div className="rounded-xl border bg-card text-card-foreground shadow">
         <div className="flex flex-col p-6 space-y-1">
-          <div className="font-semibold tracking-tight text-2xl">
-            Create an account
-          </div>
+          <div className="font-semibold tracking-tight text-2xl">Sign In</div>
           <div className="text-sm text-muted-foreground">
-            Enter your email below to create your account
+            Welcome back! Please sign in to continue
           </div>
         </div>
         <div className="p-6 pt-0 grid">
@@ -101,11 +100,19 @@ const FormLogin = () => {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isPending}>
-                {!isPending && "Login"}
+                {!isPending && "Sign In"}
                 {isPending && <Loader2 className="animate-spin" />}
               </Button>
             </form>
           </Form>
+          <div className="flex justify-center text-sm pt-2 gap-1">
+            <span className="bg-background text-muted-foreground">
+              Dont have an account?
+            </span>
+            <Link href="/register" className="text-primary font-semibold">
+              Register
+            </Link>
+          </div>
         </div>
       </div>
     </div>

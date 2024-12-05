@@ -1,9 +1,10 @@
-import React from 'react'
+import { getSessionFromCookie } from "@/lib/auth";
+import React from "react";
 
-const HomePage = () => {
-  return (
-    <div>HomePage</div>
-  )
-}
+const HomePage = async () => {  
+  const session = await getSessionFromCookie();
+  console.log(session);
+  return <div>HomePage</div>;
+};
 
-export default HomePage
+export default HomePage;
