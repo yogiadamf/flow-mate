@@ -6,6 +6,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
 export function BreadcrumbHeader() {
@@ -20,7 +21,7 @@ export function BreadcrumbHeader() {
               <BreadcrumbLink className="capitalize" href={`${path}`}>
                 {path === "" ? "Dashboard" : path}
               </BreadcrumbLink>
-            </BreadcrumbItem>
+            </BreadcrumbItem>            
           </React.Fragment>
         ))}
       </BreadcrumbList>

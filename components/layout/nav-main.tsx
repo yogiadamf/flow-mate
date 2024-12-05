@@ -74,7 +74,11 @@ export function NavMain({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.includes(item.url)}
+                isActive={
+                  item.url === "/"
+                    ? pathname === "/"
+                    : pathname.includes(item.url)
+                }
                 tooltip={item.title}
               >
                 <Link href={item.url}>

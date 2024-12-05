@@ -34,3 +34,16 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
 }
+
+model Workflow {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  definition  String
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([name, userId])
+}

@@ -11,15 +11,14 @@ import { BreadcrumbHeader } from "@/components/layout/breadcrumb-header";
 import { NavActions } from "@/components/layout/nav-action";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await getSessionFromCookie();
-
+  const user = await getSessionFromCookie();
   return (
     <SidebarProvider>
       <AppSidebar
         user={{
-          name: session?.user?.name || "",
-          email: session?.user?.email || "",
-          image: session?.user?.image || "",
+          name: user?.name || "",
+          email: user?.email || "",
+          image: user?.image || "",
         }}
       />
       <SidebarInset>

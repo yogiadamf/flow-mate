@@ -46,7 +46,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton size="lg" asChild className="hover:bg-secondary">
               <Link href="/" className={cn("flex items-center gap-2")}>
                 <div className="flex aspect-square size-8  items-center justify-center rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600">
                   <SquareDashedMousePointer

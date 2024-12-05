@@ -14,5 +14,5 @@ export const getSessionFromCookie = async () => {
     return null; // Session expired or not found
   }
 
-  return session;
+  return session.user;
 };
