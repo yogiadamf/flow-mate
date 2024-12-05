@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { PostRegister } from "@/actions/register/postRegister";
+import { PostRegister } from "@/actions/auth/authActions";
 
 const FormRegister = () => {
   const form = useForm<registerSchemaType>({
@@ -26,7 +26,7 @@ const FormRegister = () => {
     defaultValues: {
       email: "",
       username: "",
-      password: "",      
+      password: "",
     },
   });
   const { mutate, isPending } = useMutation({
@@ -34,10 +34,11 @@ const FormRegister = () => {
     onSuccess: () => {
       toast.success("Register success", { id: "register" });
     },
-    onError: () => {
-      toast.error("Failed to register account", {
-        id: "register",
-      });
+    onError: (error) => {
+      // If the error is an instance of Error, show its message, otherwise show a generic message
+      const errorMessage =
+        error instanceof Error ? error.message : "Something went wrong!";
+      toast.error(errorMessage, { id: "login" });
     },
   });
 
@@ -53,9 +54,11 @@ const FormRegister = () => {
     <div className="flex items-center justify-center [&>div]:w-full">
       <div className="rounded-xl border bg-card text-card-foreground shadow">
         <div className="flex flex-col p-6 space-y-1">
-          <div className="font-semibold tracking-tight text-2xl">Create an account</div>
+          <div className="font-semibold tracking-tight text-2xl">
+            Create an account
+          </div>
           <div className="text-sm text-muted-foreground">
-          Enter your email below to create your account
+            Enter your email below to create your account
           </div>
         </div>
         <div className="p-6 pt-0 grid">
@@ -115,7 +118,7 @@ const FormRegister = () => {
                     <FormMessage />
                   </FormItem>
                 )}
-              />              
+              />
               <Button type="submit" className="w-full" disabled={isPending}>
                 {!isPending && "Create account"}
                 {isPending && <Loader2 className="animate-spin" />}
@@ -124,7 +127,7 @@ const FormRegister = () => {
           </Form>
           <div className="flex justify-center text-sm pt-2 gap-1">
             <span className="bg-background text-muted-foreground">
-            Already have an account?
+              Already have an account?
             </span>
             <Link href="/login" className="text-primary font-semibold">
               Sign in

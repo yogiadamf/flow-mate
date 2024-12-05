@@ -1,6 +1,6 @@
 "use client";
 import { HomeIcon, Layers2Icon, MenuIcon, ShieldCheckIcon } from "lucide-react";
-import Logo from "@/components/Logo";
+import Logo from "@/components/logo";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";

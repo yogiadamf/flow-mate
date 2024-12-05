@@ -10,7 +10,19 @@ export async function middleware(req: NextRequest) {
 
   const session = req.cookies.get("session-token")?.value;
   if (isProtectedRoute && !session) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = "/login"; // Set the redirect path to "/login"
+
+    const response = NextResponse.redirect(redirectUrl);
+
+    // Set the "redirect-url" cookie to the URL of the protected route
+    response.cookies.set("redirect-url", req.nextUrl.pathname, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      path: "/", // Make the cookie available across all routes
+    });
+
+    return response;
   }
   if (isPublicRoute && session) {
     return NextResponse.redirect(new URL("/", req.nextUrl));

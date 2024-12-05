@@ -14,13 +14,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
-import { PostLogin } from "@/actions/login/postLogin";
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { PostLogin } from "@/actions/auth/authActions";
 
-const FormLogin = () => {    
+const FormLogin = () => {
   const form = useForm<loginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -33,10 +33,11 @@ const FormLogin = () => {
     onSuccess: () => {
       toast.success("Login success", { id: "login" });
     },
-    onError: () => {
-      toast.error("Invalid email or password ", {
-        id: "login",
-      });
+    onError: (error) => {
+      // If the error is an instance of Error, show its message, otherwise show a generic message
+      const errorMessage =
+        error instanceof Error ? error.message : "Something went wrong!";
+      toast.error(errorMessage, { id: "login" });
     },
   });
 
@@ -73,7 +74,11 @@ const FormLogin = () => {
                       <p className="text-xs text-red-500">*</p>
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} autoComplete="current-email" />
+                      <Input
+                        {...field}
+                        autoComplete="current-email"
+                        autoFocus
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
