@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const protectedRoutes = ["/"];
+const protectedRoutes = ["/", "/workflows"];
 const publicRoutes = ["/login", "/register"];
 
 export async function middleware(req: NextRequest) {
@@ -32,5 +32,5 @@ export async function middleware(req: NextRequest) {
 
 // This is where you can specify which routes this middleware should run for
 export const config = {
-  matcher: ["/", "/login"],
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 };

@@ -50,10 +50,10 @@ export function NavActions() {
               </div>
               <div className="line-clamp-2 text-xs text-muted-foreground">
                 I have a question about the budget for the upcoming project. It
-                seems like there's a discrepancy in the allocation of resources.
-                I've reviewed the budget report and identified a few areas where
+                seems like theres a discrepancy in the allocation of resources.
+                Ive reviewed the budget report and identified a few areas where
                 we might be able to optimize our spending without compromising
-                the project's quality. I've attached a de
+                the projects quality. Ive attached a de
               </div>
             </button>
           </div>

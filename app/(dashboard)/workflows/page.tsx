@@ -1,8 +1,9 @@
 import { Suspense } from "react";
-import { GetWorkflowsForUser } from "@/actions/workflows/workflowsActions";
+import { GetWorkflowsForUser } from "@/actions/workflow/workflowActions";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InboxIcon } from "lucide-react";
-import CreateWorkFlowDialog from "./_components/CreateWorkFlowDialog";
+import WorkflowCard from "./_components/WorkflowCard";
+import CreateWorkFlowDialog from "./_components/CreateWorkflowDialog";
 
 const UserWorkflowsSkeleton = () => {
   return (
@@ -50,7 +51,13 @@ const UserWorkflows = async () => {
       </div>
     );
   }
-  return <div></div>;
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      {workflows.map((workflow) => (
+        <WorkflowCard key={workflow.id} workflow={workflow} />
+      ))}
+    </div>
+  );
 };
 
 export default WorkFlowsPage;
