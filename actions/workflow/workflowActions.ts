@@ -6,13 +6,14 @@ import {
   createWorkflowSchema,
   createWorkflowSchemaType,
 } from "@/schema/workflow";
-import { WorkflowStatus } from "@/types/workflow";
+import { WorkflowExecutionPlan, WorkflowStatus } from "@/types/workflow";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { AppNode } from "@/types/appNode";
 import { Edge } from "@xyflow/react";
 import { TaskType } from "@/types/task";
 import { CreateFlowNode } from "@/lib/workflow/createWorkFlowNode";
+import { FLowToExecutionPlan } from "@/lib/workflow/executionPlan";
 
 export async function GetWorkflowsForUser() {
   const user = await getSessionFromCookie();
@@ -106,4 +107,45 @@ export async function DeleteWorkflow(id: string) {
     },
   });
   revalidatePath("/workflows");
+}
+
+export async function RunWorkflow(form: {
+  workflowId: string;
+  flowDefinition?: string;
+}) {
+  const user = await getSessionFromCookie();
+  if (!user) {
+    throw new Error("unauthenticated");
+  }
+
+  const { workflowId, flowDefinition } = form;
+  if (!workflowId) {
+    throw new Error("Workflow not found");
+  }
+
+  const workflow = await prisma.workflow.findUnique({
+    where: {
+      id: workflowId,
+      userId: user.id,
+    },
+  });
+  if (!workflow) {
+    throw new Error("Workflow not found");
+  }
+
+  let executionPlan: WorkflowExecutionPlan;
+  if (!flowDefinition) {
+    throw new Error("Flow definition is not defined");
+  }
+
+  const flow = JSON.parse(flowDefinition);
+  const result = FLowToExecutionPlan(flow.nodes, flow.edges);
+  if (result.error) {
+    throw new Error("Flow definition is not valid");
+  }
+  if (!result.executionPlan) {
+    throw new Error("Execution plan not found");
+  }
+  executionPlan = result.executionPlan;
+  console.log("executionPlan", executionPlan);
 }

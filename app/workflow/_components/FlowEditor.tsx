@@ -10,6 +10,7 @@ import {
   Connection,
   Controls,
   Edge,
+  getOutgoers,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -20,6 +21,7 @@ import NodeComponent from "@/app/workflow/_components/nodes/NodeComponent";
 import React, { useCallback, useEffect } from "react";
 import { AppNode } from "@/types/appNode";
 import DeletableEdge from "@/app/workflow/_components/edges/DeletableEdge";
+import { TaskRegistry } from "@/lib/workflow/task/registry";
 
 const nodeTypes = {
   FlowScrapeNode: NodeComponent,
@@ -86,6 +88,42 @@ const FlowEditor = ({ workflow }: { workflow: Workflow }) => {
     },
     [setEdges, updateNodeData, nodes]
   );
+
+  const isValidConnection = useCallback(
+    (connection: Edge | Connection) => {
+      // Prevent connecting to self
+      if (connection.source === connection.target) {
+        return false;
+      }
+
+      const source = nodes.find((node) => node.id === connection.source);
+      const target = nodes.find((node) => node.id === connection.target);
+      if (!source || !target) return false;
+
+      const sourceTask = TaskRegistry[source.data.type];
+      const targetTask = TaskRegistry[target.data.type];
+      const output = sourceTask.outputs.find(
+        (output) => output.name === connection.sourceHandle
+      );
+      const input = targetTask.inputs.find(
+        (input) => input.name === connection.targetHandle
+      );
+      if (input?.type !== output?.type) return false;
+
+      const hasCycle = (node: AppNode, visited = new Set()) => {
+        if (visited.has(node.id)) return false;
+        visited.add(node.id);
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.target) return true;
+          if (hasCycle(outgoer, visited)) return true;
+        }
+      };
+      const detachedCycle = hasCycle(target);
+      return !detachedCycle;
+    },
+    [nodes, edges]
+  );
+
   return (
     <main className="w-full h-full">
       <ReactFlow
@@ -102,6 +140,7 @@ const FlowEditor = ({ workflow }: { workflow: Workflow }) => {
         onDragOver={onDragOver}
         onDrop={onDrop}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
       >
         <Controls position="top-left" fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />

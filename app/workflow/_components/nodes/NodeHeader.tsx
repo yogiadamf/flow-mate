@@ -2,12 +2,22 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CreateFlowNode } from "@/lib/workflow/createWorkFlowNode";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
+import { AppNode } from "@/types/appNode";
 import { TaskType } from "@/types/task";
-import { GripVerticalIcon } from "lucide-react";
+import { useReactFlow } from "@xyflow/react";
+import { CopyIcon, GripVerticalIcon, TrashIcon } from "lucide-react";
 
-const NodeHeader = ({ taskType }: { taskType: TaskType }) => {
+const NodeHeader = ({
+  taskType,
+  nodeId,
+}: {
+  taskType: TaskType;
+  nodeId: string;
+}) => {
   const task = TaskRegistry[taskType];
+  const { deleteElements, getNode, addNodes } = useReactFlow();
   return (
     <div className="flex items-center gap-2 p-2">
       <task.icon size={16} />
@@ -17,6 +27,37 @@ const NodeHeader = ({ taskType }: { taskType: TaskType }) => {
         </p>
         <div className="flex gap-1 items-center">
           {task.isEntryPoint && <Badge>Entry point</Badge>}
+          {!task.isEntryPoint && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  deleteElements({
+                    nodes: [{ id: nodeId }],
+                  });
+                }}
+              >
+                <TrashIcon size={12} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const node = getNode(nodeId) as AppNode;
+                  const newX = node.position.x;
+                  const newY = node.position.y + node.measured?.height! + 20;
+                  const newNode = CreateFlowNode(node.data.type, {
+                    x: newX,
+                    y: newY,
+                  });
+                  addNodes([newNode]);
+                }}
+              >
+                <CopyIcon size={12} />
+              </Button>
+            </>
+          )}
           <Button
             variant="ghost"
             size="icon"
