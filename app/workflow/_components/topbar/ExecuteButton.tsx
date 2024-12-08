@@ -1,18 +1,18 @@
 "use client";
 
-import { RunWorkflow } from "@/actions/workflow/workflowActions";
+import { ExecutionWorkflow } from "@/actions/workflow/executionActions";
 import { Button } from "@/components/ui/button";
-import useExecutionPlan from "@/hooks/useExecutionPlan";
 import { useMutation } from "@tanstack/react-query";
 import { useReactFlow } from "@xyflow/react";
 import { PlayIcon } from "lucide-react";
 import { toast } from "sonner";
+import useExecutionPlan from "@/hooks/useExecutionPlan";
 
 const ExecuteButton = ({ workflowId }: { workflowId: string }) => {
   const generate = useExecutionPlan();
   const { toObject } = useReactFlow();
   const mutation = useMutation({
-    mutationFn: RunWorkflow,
+    mutationFn: ExecutionWorkflow,
     onSuccess: () => {
       toast.success("Execution started", { id: "flow-execution" });
     },

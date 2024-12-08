@@ -22,7 +22,6 @@
   }
 }
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -96,14 +95,24 @@
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground scroll-smooth;
+  }
+  ::-webkit-scrollbar {
+    @apply w-1 h-1;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-gray-300;
   }
 }
 
