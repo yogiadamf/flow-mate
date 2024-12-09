@@ -14,8 +14,10 @@ import { cn } from "@/lib/utils";
 import { WorkflowStatus } from "@/types/workflow";
 import { Workflow } from "@prisma/client";
 import {
+  CornerDownRightIcon,
   FileTextIcon,
   MoreVerticalIcon,
+  MoveRightIcon,
   PlayIcon,
   ShuffleIcon,
   TrashIcon,
@@ -23,6 +25,8 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import DeleteWorkflowDialog from "./DeleteWorkflowDialog";
+import RunButton from "./RunButton";
+import ScheduleDialog from "./ScheduleDialog";
 
 const statusColor = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
@@ -99,9 +103,11 @@ const WorkflowCard = ({ workflow }: { workflow: Workflow }) => {
                 </span>
               )}
             </h3>
+            <ScheduleSection isDraft={isDraft} />
           </div>
         </div>
         <div className="flex items-center space-x-2">
+          {!isDraft && <RunButton workflowId={workflow.id} />}
           <Link
             href={`/workflow/editor/${workflow.id}`}
             className={cn(
@@ -124,5 +130,15 @@ const WorkflowCard = ({ workflow }: { workflow: Workflow }) => {
     </Card>
   );
 };
+
+function ScheduleSection({ isDraft }: { isDraft: boolean }) {
+  if (isDraft) return null;
+  return (
+    <div className="flex items-center gap-2">
+      <CornerDownRightIcon className="h-4 w-4 text-muted-foreground" />
+      <ScheduleDialog />
+    </div>
+  );
+}
 
 export default WorkflowCard;

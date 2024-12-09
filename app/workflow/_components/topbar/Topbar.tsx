@@ -4,14 +4,18 @@ import TooltipWrapper from "@/components/custom/TooltipWrapper";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import SaveButton from "@/app/workflow/_components/topbar/SaveButton";
-import ExecuteButton from "@/app/workflow/_components/topbar/ExecuteButton";
+import NavigationTabs from "./NavigationTabs";
+import PublishButton from "./PublishButton";
+import ExecuteButton from "./ExecuteButton";
+import SaveButton from "./SaveButton";
+import UnpublishButton from "./UnpublishButton";
 
 interface Props {
   title: string;
   subtitle?: string;
   workflowId: string;
   hideButtons?: boolean;
+  isPublished?: boolean;
 }
 
 const Topbar = ({
@@ -19,6 +23,7 @@ const Topbar = ({
   subtitle,
   workflowId,
   hideButtons = false,
+  isPublished = false,
 }: Props) => {
   const router = useRouter();
   return (
@@ -38,11 +43,18 @@ const Topbar = ({
           )}
         </div>
       </div>
+      <NavigationTabs workflowId={workflowId} />
       <div className="flex gap-1 flex-1 justify-end">
         {!hideButtons && (
           <>
             <ExecuteButton workflowId={workflowId} />
-            <SaveButton workflowId={workflowId} />
+            {isPublished && <UnpublishButton workflowId={workflowId} />}
+            {!isPublished && (
+              <>
+                <SaveButton workflowId={workflowId} />
+                <PublishButton workflowId={workflowId} />
+              </>
+            )}
           </>
         )}
       </div>

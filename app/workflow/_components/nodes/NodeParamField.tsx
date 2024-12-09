@@ -29,7 +29,8 @@ const NodeParamField = ({
         },
       });
     },
-    [nodeId, updateNodeData, param.name, node?.data.inputs]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [nodeId, updateNodeData, param.name, node?.data.inputs, node]
   );
   switch (param.type) {
     case TaskParamType.STRING:

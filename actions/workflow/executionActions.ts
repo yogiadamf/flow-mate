@@ -9,6 +9,7 @@ import {
   WorkflowExecutionPlan,
   WorkflowExecutionStatus,
   WorkflowExecutionTrigger,
+  WorkflowStatus,
 } from "@/types/workflow";
 import { redirect } from "next/navigation";
 import { ExecuteWorkflow } from "@/lib/workflow/executeWorkflow";
@@ -38,20 +39,28 @@ export async function ExecutionWorkflow(form: {
   }
 
   let executionPlan: WorkflowExecutionPlan;
-  if (!flowDefinition) {
-    throw new Error("Flow definition is not defined");
-  }
+  let workflowDefinition = flowDefinition;
+  if (workflow.status === WorkflowStatus.PUBLISHED) {
+    if (!workflow.executionPlan) {
+      throw new Error("No execution plan found in published workflow");
+    }
+    executionPlan = JSON.parse(workflow.executionPlan);
+    workflowDefinition = workflow.definition;
+  } else {
+    if (!flowDefinition) {
+      throw new Error("Flow definition is not defined");
+    }
+    const flow = JSON.parse(flowDefinition);
+    const result = FLowToExecutionPlan(flow.nodes, flow.edges);
+    if (result.error) {
+      throw new Error("Flow definition is not valid");
+    }
+    if (!result.executionPlan) {
+      throw new Error("Execution plan not found");
+    }
 
-  const flow = JSON.parse(flowDefinition);
-  const result = FLowToExecutionPlan(flow.nodes, flow.edges);
-  if (result.error) {
-    throw new Error("Flow definition is not valid");
+    executionPlan = result.executionPlan;
   }
-  if (!result.executionPlan) {
-    throw new Error("Execution plan not found");
-  }
-
-  executionPlan = result.executionPlan;
 
   const execution = await prisma.workflowExecution.create({
     data: {
@@ -60,7 +69,7 @@ export async function ExecutionWorkflow(form: {
       status: WorkflowExecutionStatus.PENDING,
       startedAt: new Date(),
       trigger: WorkflowExecutionTrigger.MANUAL,
-      definition: flowDefinition,
+      definition: workflowDefinition,
       phases: {
         create: executionPlan.flatMap((phase) => {
           return phase.nodes.flatMap((node) => {
@@ -126,6 +135,22 @@ export async function GetWorkflowPhaseDetails(phaseId: string) {
           timestamp: "asc",
         },
       },
+    },
+  });
+}
+
+export async function GetWorkflowExecutions(workflowId: string) {
+  const user = await getSessionFromCookie();
+  if (!user) {
+    throw new Error("unauthenticated");
+  }
+  return await prisma.workflowExecution.findMany({
+    where: {
+      workflowId,
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 }
